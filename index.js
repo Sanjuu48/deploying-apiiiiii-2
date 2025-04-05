@@ -1,15 +1,18 @@
 const express = require('express');
-const { resolve } = require('path');
+const mongoose = require('mongoose');
+const menuRoutes = require('./Routes/MenuRoutes.js');
+
+require('dotenv').config();
 
 const app = express();
-const port = 3010;
+app.use('/menu', menuRoutes);
+app.use(express.json());
 
-app.use(express.static('static'));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error(err));
 
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
